@@ -17,8 +17,8 @@ int main()
 {
     double left_boundary_a=0, right_boundary_b=0;
     double measurement_error=0;
-    unsigned int intervals, var;
-    double integral_s=0;
+    double integral_s = 0, I1 = 0, I2 = 0, delta = 0;
+    unsigned int intervals, var, iterations;
 
 while(1)
     {
@@ -31,8 +31,16 @@ while(1)
       scanf("%u", &intervals);
       }while(intervals <= 0);
 
-  printf("\n\tEnter the measurment error of integration\n  Measurment error=");
-  scanf("%lf", &measurement_error);
+  do {
+    printf("\n\tEnter the measurment error of integration");
+    printf("\n\t0.00001 <= error <= 0.001");
+    printf("\n\tMeasurment error=");
+    scanf("%lf", &measurement_error);
+
+    if (measurement_error < 0.00001 || measurement_error > 0.001)
+        printf("\nYou are mistaken\n");
+
+} while (measurement_error < 0.00001 || measurement_error > 0.001);
  do
   {
           printf("\nChoose the method of calculating:\n");
@@ -51,46 +59,133 @@ if (var != 1 && var != 2 && var != 3 && var != 4)
          {
          case 1:
             {
-                integral_s = num_comput_integral_l_re(left_boundary_a,
-                                                      right_boundary_b, intervals);
-                printf("\n\n\t*Left Rectangles method*\n");
-                printf("\n\ta = %.2lf    \n\tb = %.2lf   \n\tIntegral = %.8lf   \n\tN = %u",
-                       left_boundary_a, right_boundary_b,  integral_s, intervals);
-            }
-         break;
+// Підбір кількості проміжків для методу лівих прямокутників
+    iterations = 0;
 
+    I1 = num_comput_integral_l_re(left_boundary_a,
+                                  right_boundary_b, intervals);
+
+    do {
+        intervals += 2;
+
+        I2 = num_comput_integral_l_re(left_boundary_a,
+                                      right_boundary_b, intervals);
+
+        delta = fabs(I1 - I2);
+        I1 = I2;
+        iterations++;
+
+    } while (delta > measurement_error);
+
+    integral_s = I2;
+
+    printf("\n\n\t======*Left Rectangles method*======\n");
+    printf("\n\ta = %.2lf", left_boundary_a);
+    printf("\n\tb = %.2lf", right_boundary_b);
+    printf("\n\tIntegral = %.8lf", integral_s);
+    printf("\n\tN = %u", intervals);
+    printf("\n\tDelta = %.8lf", delta);
+    printf("\n\tIterations = %u", iterations);
+}
+break;
         case 2:
 {
-    integral_s = num_comput_integral_r_re(left_boundary_a,
-                                          right_boundary_b, intervals);
+   // Підбір кількості проміжків для методу правих прямокутників
+    iterations = 0;
+
+    I1 = num_comput_integral_r_re(left_boundary_a,
+                                  right_boundary_b, intervals);
+
+    do {
+        intervals += 2;
+    I2 = num_comput_integral_r_re(left_boundary_a,
+                                      right_boundary_b, intervals);
+
+        delta = fabs(I1 - I2);
+        I1 = I2;
+        iterations++;
+
+    } while (delta > measurement_error);
+
+    integral_s = I2;
 
     printf("\n\n\t======*Right Rectangles method*======\n");
-
-    printf("\n\ta = %.2lf\n\tb = %.2lf\n\tIntegral = %.8lf\n\tN = %d",
-           left_boundary_a, right_boundary_b, integral_s, intervals);
+    printf("\n\ta = %.2lf", left_boundary_a);
+    printf("\n\tb = %.2lf", right_boundary_b);
+    printf("\n\tIntegral = %.8lf", integral_s);
+    printf("\n\tN = %u", intervals);
+    printf("\n\tDelta = %.8lf", delta);
+    printf("\n\tIterations = %u", iterations);
 }
 break;
          case 3:
 {
-    integral_s = num_comput_integral_trap(left_boundary_a,
-                                          right_boundary_b, intervals);
+   // Підбір кількості проміжків для методу трапецій
+    iterations = 0;
+
+    I1 = num_comput_integral_trap(left_boundary_a,
+                                  right_boundary_b, intervals);
+
+    do {
+        intervals += 2;
+
+        I2 = num_comput_integral_trap(left_boundary_a,
+                                      right_boundary_b, intervals);
+
+        delta = fabs(I1 - I2);
+        I1 = I2;
+        iterations++;
+
+    } while (delta > measurement_error);
+
+    integral_s = I2;
 
     printf("\n\n\t======*Trapezoid method*======\n");
-
-    printf("\n\ta = %.2lf\n\tb = %.2lf\n\tIntegral = %.8lf\n\tN = %d",
-           left_boundary_a, right_boundary_b, integral_s, intervals);
+    printf("\n\ta = %.2lf", left_boundary_a);
+    printf("\n\tb = %.2lf", right_boundary_b);
+    printf("\n\tIntegral = %.8lf", integral_s);
+    printf("\n\tN = %u", intervals);
+    printf("\n\tDelta = %.8lf", delta);
+    printf("\n\tIterations = %u", iterations);
 }
 break;
 
 case 4:
 {
-    integral_s = num_comput_integral_Simps(left_boundary_a,
-                                           right_boundary_b, intervals);
+    // Перевірка парності кількості проміжків для методу Сімпсона
+    if (intervals % 2 != 0) {
+        intervals++;
+        printf("\nN was increased to %u because Simpson's method requires even N.\n",
+               intervals);
+    }
+
+    // Підбір кількості проміжків для методу Сімпсона
+    iterations = 0;
+
+    I1 = num_comput_integral_Simps(left_boundary_a,
+                                   right_boundary_b, intervals);
+
+    do {
+        intervals += 2;
+
+        I2 = num_comput_integral_Simps(left_boundary_a,
+                                       right_boundary_b, intervals);
+
+        delta = fabs(I1 - I2);
+        I1 = I2;
+        iterations++;
+
+    } while (delta > measurement_error);
+
+    integral_s = I2;
 
     printf("\n\n\t======*Simpson's method*======\n");
-
-    printf("\n\ta = %.2lf\n\tb = %.2lf\n\tIntegral = %.8lf\n\tN = %d",
-           left_boundary_a, right_boundary_b, integral_s, intervals);
+    printf("\n\ta = %.2lf", left_boundary_a);
+    printf("\n\tb = %.2lf", right_boundary_b);
+    printf("\n\tIntegral = %.8lf", integral_s);
+    printf("\n\tN = %u", intervals);
+    printf("\n\tDelta = %.8lf", delta);
+    printf("\n\tIterations = %u", iterations);
 }
 break;
          }
