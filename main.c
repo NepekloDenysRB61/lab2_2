@@ -13,24 +13,33 @@ double num_comput_integral_Simps (double left_boundary_a,
                                   double right_boundary_b, unsigned int intervals);
 double integrand_expression( double x );
 
+// Головна функція програми
 int main()
 {
+    // Межі інтегрування
     double left_boundary_a=0, right_boundary_b=0;
+    // Допустима похибка обчислення
     double measurement_error=0;
+    // Результат інтегрування, послідовні наближення та їхня різниця
     double integral_s = 0, I1 = 0, I2 = 0, delta = 0;
+    // Кількість проміжків, номер методу та кількість уточнень
     unsigned int intervals, var, iterations;
 
+// Основний цикл для багаторазового виконання розрахунків
 while(1)
     {
+    // Введення лівої та правої меж інтегрування
     printf("\n\tEnter the left boundary \n  X(first)=");
     scanf("%lf", &left_boundary_a);
     printf("\n\tEnter the right boundary \n  X(last)=");
     scanf("%lf", &right_boundary_b);
+     // Введення кількості проміжків розбиття: N має бути більшим за нуль
      do{
       printf("\tEnter the number of partition intervals (N>0)\nN=");
       scanf("%u", &intervals);
       }while(intervals <= 0);
 
+  // Введення похибки з перевіркою діапазону від 0.00001 до 0.001
   do {
     printf("\n\tEnter the measurment error of integration");
     printf("\n\t0.00001 <= error <= 0.001");
@@ -41,6 +50,7 @@ while(1)
         printf("\nYou are mistaken\n");
 
 } while (measurement_error < 0.00001 || measurement_error > 0.001);
+ // Вибір одного з чотирьох методів із перевіркою номера
  do
   {
           printf("\nChoose the method of calculating:\n");
@@ -55,6 +65,7 @@ if (var != 1 && var != 2 && var != 3 && var != 4)
 
 } while (var != 1 && var != 2 && var != 3 && var != 4);
  system("cls");
+   // Виконання розрахунку в case відповідно до обраного методу
    switch(var)
          {
          case 1:
@@ -62,15 +73,18 @@ if (var != 1 && var != 2 && var != 3 && var != 4)
 // Підбір кількості проміжків для методу лівих прямокутників
     iterations = 0;
 
+    // Початкове наближення інтегралу для введеного N
     I1 = num_comput_integral_l_re(left_boundary_a,
                                   right_boundary_b, intervals);
 
+    // Збільшення N на 2, доки різниця наближень не перевищуватиме похибку
     do {
         intervals += 2;
 
         I2 = num_comput_integral_l_re(left_boundary_a,
                                       right_boundary_b, intervals);
 
+        // Абсолютна різниця двох послідовних наближень інтегралу
         delta = fabs(I1 - I2);
         I1 = I2;
         iterations++;
@@ -79,6 +93,7 @@ if (var != 1 && var != 2 && var != 3 && var != 4)
 
     integral_s = I2;
 
+    // Виведення меж, інтегралу, кінцевого N, різниці та кількості уточнень
     printf("\n\n\t======*Left Rectangles method*======\n");
     printf("\n\ta = %.2lf", left_boundary_a);
     printf("\n\tb = %.2lf", right_boundary_b);
@@ -93,14 +108,17 @@ break;
    // Підбір кількості проміжків для методу правих прямокутників
     iterations = 0;
 
+    // Початкове наближення інтегралу для введеного N
     I1 = num_comput_integral_r_re(left_boundary_a,
                                   right_boundary_b, intervals);
 
+ // Збільшення N на 2, доки різниця наближень не стане меншою або рівною похибці
     do {
         intervals += 2;
     I2 = num_comput_integral_r_re(left_boundary_a,
                                       right_boundary_b, intervals);
 
+        // Абсолютна різниця двох послідовних наближень інтегралу
         delta = fabs(I1 - I2);
         I1 = I2;
         iterations++;
@@ -109,6 +127,7 @@ break;
 
     integral_s = I2;
 
+    // Виведення меж, інтегралу, кінцевого N, різниці та кількості уточнень
     printf("\n\n\t======*Right Rectangles method*======\n");
     printf("\n\ta = %.2lf", left_boundary_a);
     printf("\n\tb = %.2lf", right_boundary_b);
@@ -123,15 +142,18 @@ break;
    // Підбір кількості проміжків для методу трапецій
     iterations = 0;
 
+    // Початкове наближення інтегралу для введеного N
     I1 = num_comput_integral_trap(left_boundary_a,
                                   right_boundary_b, intervals);
 
+    // Збільшення N на 2, доки різниця наближень не перевищуватиме похибку
     do {
         intervals += 2;
 
         I2 = num_comput_integral_trap(left_boundary_a,
                                       right_boundary_b, intervals);
 
+        // Абсолютна різниця двох послідовних наближень інтегралу
         delta = fabs(I1 - I2);
         I1 = I2;
         iterations++;
@@ -140,6 +162,7 @@ break;
 
     integral_s = I2;
 
+    // Виведення меж, інтегралу, кінцевого N, різниці та кількості уточнень
     printf("\n\n\t======*Trapezoid method*======\n");
     printf("\n\ta = %.2lf", left_boundary_a);
     printf("\n\tb = %.2lf", right_boundary_b);
@@ -162,15 +185,18 @@ case 4:
     // Підбір кількості проміжків для методу Сімпсона
     iterations = 0;
 
+    // Початкове наближення інтегралу для введеного N
     I1 = num_comput_integral_Simps(left_boundary_a,
                                    right_boundary_b, intervals);
 
+    // Збільшення N на 2, доки різниця наближень не перевищуватиме похибку
     do {
         intervals += 2;
 
         I2 = num_comput_integral_Simps(left_boundary_a,
                                        right_boundary_b, intervals);
 
+        // Абсолютна різниця двох послідовних наближень інтегралу
         delta = fabs(I1 - I2);
         I1 = I2;
         iterations++;
@@ -179,6 +205,7 @@ case 4:
 
     integral_s = I2;
 
+    // Виведення меж, інтегралу, кінцевого N, різниці та кількості уточнень
     printf("\n\n\t======*Simpson's method*======\n");
     printf("\n\ta = %.2lf", left_boundary_a);
     printf("\n\tb = %.2lf", right_boundary_b);
@@ -189,8 +216,8 @@ case 4:
 }
 break;
          }
-}
 
+}
     return 0;
 }
 
